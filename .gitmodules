@@ -1,0 +1,6 @@
+[submodule "bash-completion"]
+	path = bash-completion
+	url = git://git.debian.org/git/bash-completion/bash-completion.git
+[submodule "emacs-starter-kit"]
+	path = emacs-starter-kit
+	url = git@github.com:madhadron/emacs-starter-kit.git
