@@ -8,3 +8,4 @@ for f in bash_profile bashrc inputrc emacs.d; do
     ln -sf $CONFIG_DIR/$f ~/.$f
 done
 
+emacs -batch --eval '(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)'

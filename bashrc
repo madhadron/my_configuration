@@ -48,8 +48,8 @@ fi
 
 if [ `uname` = Darwin ]; then
     export PATH="/Applications/Emacs.app/Contents/MacOS/bin:/usr/local/bin:$PATH"
-    alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
-    alias emacsclient=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+    alias emacs="/Applications/Emacs24.app/Contents/MacOS/Emacs"
+    alias emacsclient="/Applications/Emacs24.app/Contents/MacOS/bin/emacsclient"
 fi
 
 
