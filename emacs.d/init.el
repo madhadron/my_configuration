@@ -265,7 +265,8 @@
    (sql . t)
    (sqlite .t )))
 
-(set-face-attribute 'default nil :font  "-apple-DejaVu_Sans_Mono-medium-normal-normal-*-18-*-*-*-m-0-iso10646-1")
+(set-face-attribute 'default nil :font
+                    "DejaVu Sans Mono-18")
 
 
 (defun insert-time ()
