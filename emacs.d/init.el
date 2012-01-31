@@ -236,7 +236,8 @@
 (add-to-list 'auto-mode-alist
              '(("\\.org\\'" . org-mode)
                ("bashrc\\'" . sh-mode)
-               ("bash_profile\\'" . sh-mode)))
+               ("bash_profile\\'" . sh-mode)
+               ("\\.tex\\'" . latex-mode)))
 
 (set-default 'truncate-lines nil)
 (setq truncate-partial-width-windows nil)
@@ -352,3 +353,16 @@ This is used to set `sql-alternate-buffer-name' within
 
 (setq sql-association-alist
       '(("IonTorrent" ("localhost" "fredross" "rf1ru!3&nky" "iontorrent"))))
+
+;; LaTeX
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-masterr nil)
+
+(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+(setq reftex-plug-into-AUCTeX t)
+
