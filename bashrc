@@ -35,7 +35,7 @@ if [ `hostname` = mephistopheles ]; then
     :
 fi
 
-alias molmicro="ssh fredross@127.25.186.81"
+alias molmicro="ssh fredross@172.25.186.81"
 if [ 'microdb' \< `hostname` ]; then
     :
 fi
