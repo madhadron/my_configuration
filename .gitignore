@@ -1,0 +1,4 @@
+.emacs.d/.*
+.emacs.d/places
+.emacs.d/backups
+.emacs.d/anything-c-adaptive-history

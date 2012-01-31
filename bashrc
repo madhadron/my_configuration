@@ -46,7 +46,7 @@ if [ `hostname` = sci ]; then
     alias emacsclient=emacsclient.emacs-snapshot
 fi
 
-if [ `uname` = Darwin]; then
+if [ `uname` = Darwin ]; then
     export PATH="/Applications/Emacs.app/Contents/MacOS/bin:/usr/local/bin:$PATH"
     alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
     alias emacsclient=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
