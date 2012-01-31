@@ -1,25 +1,23 @@
-[[ $PS1 && -f $CONFIG_DIR/bash_completion ]] && \
-    source $CONFIG_DIR/bash_completion
+# My configuration files are not in ~, but in a git repository
+# elsewhere and symlinked in. All support files remain where they are
+# in the repository, and are not symlinked, so the includes must be
+# able to get to the repository. My solution is to create a file
+# ~/.config_dir which contains the path to the config repository. To
+# get the paths, we have to source ~/.config_dir.
+source ~/.config_dir
 
+
+
+# Git integration
 [[ $PS1 && -f $CONFIG_DIR/git-completion ]] && \
     source $CONFIG_DIR/git-completion
-
+  
 PS1='\h:\W$(__git_ps1 "(%s)") \u\$ '
 
+
+
+# Host specific customizations
 alias rhino="ssh fross@rhino"
-alias meph="ssh fross@mephistopheles"
-alias molmicro="ssh fredross@molmicro"
-alias sci="ssh labmed+fredross@sci.labmed.washington.edu"
-
-export CDPATH=.:~:~/data:~/data/writing:~/data/projects:~/data/code
-export HISTIGNORE="&:ls:ls *:emacs:[bf]g:exit"
-set -o ignoreeof
-
-shopt -s cdspell
-shopt -s cmdhist
-shopt -s dotglob
-shopt -s extglob
-
 if [ 'rhino' \< `hostname` -o 'hyrax' \< `hostname` ]; then
     umask 007
     export MATSENGRP=/mnt/orca/home/phs_grp/matsengrp
@@ -32,13 +30,34 @@ if [ 'rhino' \< `hostname` -o 'hyrax' \< `hostname` ]; then
     alias silo="cd $SILO"
 fi
 
-if [ `uname` = 'Linux' ]; then
-    # Generic Linux configuration
+alias meph="ssh fross@mephistopheles"
+if [ `hostname` = mephistopheles ]; then
     :
 fi
 
-if [ `uname` = 'Darwin' ]; then
-    # Laptop configuration
+alias molmicro="ssh fredross@127.25.186.81"
+if [ 'microdb' \< `hostname` ]; then
     :
 fi
 
+alias sci="ssh labmed+fredross@sci.labmed.washington.edu"
+if [ `hostname` = sci ]; then
+    alias emacs=emacs-snapshot
+    alias emacsclient=emacsclient.emacs-snapshot
+fi
+
+if [ `uname` = Darwin]; then
+    export PATH="/Applications/Emacs.app/Contents/MacOS/bin:/usr/local/bin:$PATH"
+    alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+    alias emacsclient=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+fi
+
+
+# Miscellaneous settings
+export CDPATH=".:~/data/projects:~/data/writing:~/data/code"
+export HISTIGNORE="&:ls:ls *:emacs:[bf]g:exit"
+set -o ignoreeof
+shopt -s cdspell
+shopt -s cmdhist
+shopt -s dotglob
+shopt -s extglob

@@ -1,0 +1,10 @@
+#+TITLE Fred Ross's computer configuration
+
+This is a shared configuration to be used across a number of machines.
+It is meant to be kept in a git repository, and its components synced
+when changed. I finally broke down and spent the time to build this
+because I was wasting time trying to use commands I had built on
+another computer.
+
+* Installation
+Run setup.sh. It will link all the files into ~.
