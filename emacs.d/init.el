@@ -233,11 +233,10 @@
   (turn-off-auto-fill)
   (longlines-mode 0))
 
-(add-to-list 'auto-mode-alist
-             '(("\\.org\\'" . org-mode)
-               ("bashrc\\'" . sh-mode)
-               ("bash_profile\\'" . sh-mode)
-               ("\\.tex\\'" . latex-mode)))
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(add-to-list 'auto-mode-alist '("bashrc\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("bash_profile\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.tex\\'" . latex-mode))
 
 (set-default 'truncate-lines nil)
 (setq truncate-partial-width-windows nil)
