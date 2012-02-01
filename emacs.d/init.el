@@ -8,9 +8,6 @@
 (global-set-key "\C-x\C-g" 'magit-status)
 (line-number-mode 1)
 (column-number-mode 1)
-(scroll-bar-mode 0)
-(tool-bar-mode 0)
-(toggle-menu-bar-mode-from-frame t)
 
 
 (add-to-list 'load-path "~/.emacs.d")
@@ -366,3 +363,6 @@ This is used to set `sql-alternate-buffer-name' within
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 (setq reftex-plug-into-AUCTeX t)
 
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(if (fboundp 'menu-bar-mode) (menu-bar-mode 1))
