@@ -47,7 +47,7 @@ if [ `hostname` = sci ]; then
 fi
 
 if [ `uname` = Darwin ]; then
-    export PATH="/Applications/Emacs.app/Contents/MacOS/bin:/usr/local/bin:$PATH"
+    export PATH="/Applications/Emacs.app/Contents/MacOS/bin:/usr/local/bin:/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin:$PATH"
     alias emacs="/Applications/Emacs24.app/Contents/MacOS/Emacs"
     alias emacsclient="/Applications/Emacs24.app/Contents/MacOS/bin/emacsclient"
 fi
@@ -61,3 +61,9 @@ shopt -s cdspell
 shopt -s cmdhist
 shopt -s dotglob
 shopt -s extglob
+
+# Python virtualenv setup
+source /opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/virtualenvwrapper-3.0-py2.7.egg/EGG-INFO/scripts/virtualenvwrapper.sh
+export WORKON_HOME=~/.virtualenvs
+mkdir -p $WORKON_HOME
+

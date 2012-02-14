@@ -366,3 +366,40 @@ This is used to set `sql-alternate-buffer-name' within
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 (setq reftex-plug-into-AUCTeX t)
 
+(setq org-log-done 'time)
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+(setq org-todo-keywords '((sequence "DOING"  "BLOCKED" "PENDING" "|" "FINISHED")
+                          (sequence "WAITING" "TODO" | "DONE")))
+
+(setq org-agenda-custom-commands
+      '(("w" "Waiting fors..." ((todo "WAITING")))
+        ("y" "@Anywhere todos" ((tags-todo "@anywhere")))
+        ("c" "@Computer todos" ((tags-todo "@computer")))
+        ("e" "@Errands todos" ((tags-todo "@errands")))
+        ("f" "@Fremont todos" ((tags-todo "@fremont")))
+        ("s" "@Sonja's todos" ((tags-todo "@sonjas")))
+        ("k" "@Work todos" ((tags-todo "@work")))
+        ("p" "Current projects" ((todo "DOING")))))
+
+
+(setq org-todo-keyword-faces
+      '(("WAITING-FOR" . org-warning)
+        ("TODO" . org-warning)
+        ("DOING" . org-warning)
+        ("PENDING" . "yellow")))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-custom-commands (quote (("w" "Waiting for items" todo "WAITING" nil nil))))
+ '(org-agenda-files (quote ("~/data/org/projects.org"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
