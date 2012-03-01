@@ -4,8 +4,7 @@
 (global-set-key "\C-w" 'backward-kill-word)
 (global-set-key "\C-x\C-k" 'kill-region)
 (global-set-key "\C-c\C-k" 'kill-region)
-
-(global-set-key "\C-x\C-g" 'magit-status)
+(global-set-key "\M-p\M-p" 'magit-status)
 (line-number-mode 1)
 (column-number-mode 1)
 (scroll-bar-mode 0)
@@ -411,10 +410,27 @@ This is used to set `sql-alternate-buffer-name' within
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(org-agenda-custom-commands (quote (("w" "Waiting for items" todo "WAITING" nil nil))))
- '(org-agenda-files (quote ("~/data/org/projects.org"))))
+ '(org-agenda-files (quote ("~/data/org/single_todos.org" "~/data/org/projects.org" "~/data/org/waiting_for.org"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+; From http://nflath.com/2010/03/org-mode-2/
+(org-clock-persistence-insinuate)
+(setq org-clock-idle-time 15)
+(setq org-clock-out-remove-zero-time-clocks t)
+(setq org-clock-persist 'history)
+ 
+(defun my-org-mode-ask-effort ()
+  "Ask for an effort estimate when clocking in."
+  (unless (org-entry-get (point) "Effort")
+    (let ((effort
+           (completing-read
+            "Effort: "
+            (org-entry-get-multivalued-property (point) "Effort"))))
+      (unless (equal effort "")
+        (org-set-property "Effort" effort)))))
+(add-hook 'org-clock-in-prepare-hook 'my-org-mode-ask-effort)
