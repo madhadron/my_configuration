@@ -1,6 +1,7 @@
 ; Global key customizations
 (global-set-key "\C-x\C-m" 'execute-extended-command)
 (global-set-key "\C-c\C-m" 'execute-extended-command)
+(global-set-key "\C-xm" 'execute-extended-command)
 (global-set-key "\C-w" 'backward-kill-word)
 (global-set-key "\C-x\C-k" 'kill-region)
 (global-set-key "\C-c\C-k" 'kill-region)
@@ -9,77 +10,74 @@
 (column-number-mode 1)
 (scroll-bar-mode 0)
 (tool-bar-mode 0)
-(toggle-menu-bar-mode-from-frame t)
+(menu-bar-mode 1)
 
+(let ((default-directory "~/.emacs.d/"))
+      (normal-top-level-add-subdirs-to-load-path))
 
-(add-to-list 'load-path "~/.emacs.d")
 (require 'package)
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-
-
 (require 'color-theme)
 (require 'color-theme-tango)
 
-; Test IDO things -  from http://www.jaydonnell.com/blog/2011/10/07/setting-up-aquamacs-for-clojure-and-general-goodness/
-(require 'ido)
-(ido-mode t)
-(setq ido-enable-prefix nil
-      ido-enable-flex-matching t
-      ido-auto-merge-work-directories-length nil
-      ido-create-new-buffer 'always
-      ido-use-filename-at-point 'guess
-      ido-use-virtual-buffers t
-      ido-handle-duplicate-virtual-buffers 2
-      ido-max-prospects 10)
+;; ; IDO things -  from http://www.jaydonnell.com/blog/2011/10/07/setting-up-aquamacs-for-clojure-and-general-goodness/
+;; (require 'ido)
+;; (ido-mode t)
+;; (setq ido-enable-prefix nil
+;;       ido-enable-flex-matching t
+;;       ido-auto-merge-work-directories-length nil
+;;       ido-create-new-buffer 'always
+;;       ido-use-filename-at-point 'guess
+;;       ido-use-virtual-buffers t
+;;       ido-handle-duplicate-virtual-buffers 2
+;;       ido-max-prospects 10)
 
-;; Display ido results vertically, rather than horizontally
-(setq ido-decorations (quote ("\n-> " "" "\n " "\n ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
-(defun ido-disable-line-trucation () (set (make-local-variable 'truncate-lines) nil))
-(add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-trucation)
+;; ;; Display ido results vertically, rather than horizontally
+;; (setq ido-decorations (quote ("\n-> " "" "\n " "\n ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
+;; (defun ido-disable-line-trucation () (set (make-local-variable 'truncate-lines) nil))
+;; (add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-trucation)
 
-(require 'anything)
-(require 'anything-match-plugin)
-(require 'anything-config)
+;; (require 'anything)
+;; (require 'anything-match-plugin)
+;; (require 'anything-config)
 
-(setq recentf-max-saved-items 500)
+;; (setq recentf-max-saved-items 500)
 
-(defun anything-c-sources-git-project-for (pwd)
-  (loop for elt in
-        '(("Modified files (%s)" . "--modified")
-          ("Untracked files (%s)" . "--others --exclude-standard")
-          ("All controlled files in this project (%s)" . ""))
-        collect
-        `((name . ,(format (car elt) pwd))
-          (init . (lambda ()
-                    (unless (and ,(string= (cdr elt) "") ;update candidate buffer every time except for that of all project files
-                                 (anything-candidate-buffer))
-                      (with-current-buffer
-                          (anything-candidate-buffer 'global)
-                        (insert
-                         (shell-command-to-string
-                          ,(format "git ls-files $(git rev-parse --show-cdup) %s"
-                                   (cdr elt))))))))
-          (candidates-in-buffer)
-          (type . file))))
+;; (defun anything-c-sources-git-project-for (pwd)
+;;   (loop for elt in
+;;         '(("Modified files (%s)" . "--modified")
+;;           ("Untracked files (%s)" . "--others --exclude-standard")
+;;           ("All controlled files in this project (%s)" . ""))
+;;         collect
+;;         `((name . ,(format (car elt) pwd))
+;;           (init . (lambda ()
+;;                     (unless (and ,(string= (cdr elt) "") ;update candidate buffer every time except for that of all project files
+;;                                  (anything-candidate-buffer))
+;;                       (with-current-buffer
+;;                           (anything-candidate-buffer 'global)
+;;                         (insert
+;;                          (shell-command-to-string
+;;                           ,(format "git ls-files $(git rev-parse --show-cdup) %s"
+;;                                    (cdr elt))))))))
+;;           (candidates-in-buffer)
+;;           (type . file))))
 
-(defun anything-git-project ()
-  (interactive)
-  (let* ((pwd (shell-command-to-string "echo -n `pwd`"))
-         (sources (anything-c-sources-git-project-for pwd)))
-    (anything-other-buffer sources
-     (format "*Anything git project in %s*" pwd))))
-
-
-; Now my insane org-mode modifications
+;; (defun anything-git-project ()
+;;   (interactive)
+;;   (let* ((pwd (shell-command-to-string "echo -n `pwd`"))
+;;          (sources (anything-c-sources-git-project-for pwd)))
+;;     (anything-other-buffer sources
+;;      (format "*Anything git project in %s*" pwd))))
 
 
-(add-to-list 'load-path "~/.emacs.d/site-lisp")
+;;;;;;;;;;;;
+;; Typopunct
+;;;;;;;;;;;;
 (require 'typopunct)
 (typopunct-change-language 'english t)
-
 
 (defconst typopunct-minus (decode-char 'ucs #x2212))
 (defconst typopunct-pm    (decode-char 'ucs #xB1))
@@ -96,6 +94,9 @@
    ((looking-back "+/")
     (progn (replace-match "")
            (insert typopunct-pm)))
+   ((looking-back "|-*")
+    (progn (replace-match "")
+           (insert "|---")))
    (t ad-do-it)))
 (defun typopunct-insert-mp (arg)
   (interactive "p")
@@ -232,7 +233,10 @@
   (turn-off-auto-fill)
   (longlines-mode 0))
 
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(setq org-src-fontify-natively t)
+
+(add-to-list 'auto-mode-alist '("\\.(org|txt)\\'" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.plan\\'"))
 (add-to-list 'auto-mode-alist '("bashrc\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("bash_profile\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("\\.tex\\'" . latex-mode))
@@ -381,24 +385,41 @@ This is used to set `sql-alternate-buffer-name' within
 
 (global-set-key (kbd "C-c e") 'fc-eval-and-replace)
 (setq org-log-done 'time)
+(setq org-tag-alist '(("@anywhere" . ?a)
+                      ("@errands" . ?e)
+                      ("@sonjas" . ?h)
+                      ("@fremont" . ?f)
+                      ("@computer" . ?c)
+                      ("@work" . ?w)
+                      ("@email" . ?m)
+                      ("@phone" . ?p)))
+
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 (setq org-todo-keywords '((sequence "DOING"  "BLOCKED" "PENDING" "|" "FINISHED")
-                          (sequence "WAITING" "TODO" | "DONE")))
+                          (sequence "WAITING" "TODO" "|" "DONE")))
 
+(setq org-agenda-dim-blocked-tasks t)
+(setq org-enforce-todo-checkbox-dependencies t)
 (setq org-agenda-custom-commands
-      '(("w" "Waiting fors..." ((todo "WAITING")))
-        ("y" "@Anywhere todos" ((tags-todo "@anywhere")))
-        ("c" "@Computer todos" ((tags-todo "@computer")))
-        ("e" "@Errands todos" ((tags-todo "@errands")))
-        ("f" "@Fremont todos" ((tags-todo "@fremont")))
-        ("s" "@Sonja's todos" ((tags-todo "@sonjas")))
-        ("k" "@Work todos" ((tags-todo "@work")))
-        ("p" "Current projects" ((todo "DOING")))))
+      (cons
+       (list "g" "Global todo list"
+             (mapcar (lambda (x) (list 'tags-todo (car x) '((org-agenda-prefix-format "")))) org-tag-alist))
+       '(("h" "Todos at home"
+          ((agenda "")
+           (tags-todo "@anywhere|@computer|@sonjas" ((org-agenda-prefix-format "")))))
+         ("w" "Todos at work"
+          ((agenda "")
+           (tags-todo "@anywhere|@computer|@work" ((org-agenda-prefix-format "")))))
+         ("W" "Waiting for"
+          ((todo "WAITING" ((org-agenda-prefix-format "")))))
+         ("c" "Communications"
+          ((tags-todo "@email" ((org-agenda-prefix-format "")))
+           (tags-todo "@phone" ((org-agenda-prefix-format ""))))))))
 
-
+(setq org-enforce-todo-dependencies t)
 (setq org-todo-keyword-faces
       '(("WAITING-FOR" . org-warning)
         ("TODO" . org-warning)
@@ -409,14 +430,7 @@ This is used to set `sql-alternate-buffer-name' within
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-custom-commands (quote (("w" "Waiting for items" todo "WAITING" nil nil))))
  '(org-agenda-files (quote ("~/data/org/single_todos.org" "~/data/org/projects.org" "~/data/org/waiting_for.org"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 ; From http://nflath.com/2010/03/org-mode-2/
 (org-clock-persistence-insinuate)
