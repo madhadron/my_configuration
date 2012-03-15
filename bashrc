@@ -47,7 +47,7 @@ if [ `hostname` = sci ]; then
 fi
 
 if [ `uname` = Darwin ]; then
-    export PATH="/Applications/Emacs.app/Contents/MacOS/bin:/usr/local/bin:/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin:$PATH"
+    export PATH="/Applications/Emacs24.app/Contents/MacOS/bin:/usr/local/bin:/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin:$PATH"
     alias emacs="/Applications/Emacs24.app/Contents/MacOS/Emacs"
     alias emacsclient="/Applications/Emacs24.app/Contents/MacOS/bin/emacsclient"
 fi
