@@ -234,6 +234,8 @@
   (longlines-mode 0))
 
 (setq org-src-fontify-natively t)
+(setq org-directory "~/Dropbox/org")
+(setq org-default-notes-file (concat org-directory "/todos.org"))
 
 (add-to-list 'auto-mode-alist '("\\.(org|txt)\\'" . org-mode))
 (add-to-list 'auto-mode-alist '("\\.plan\\'"))
@@ -269,6 +271,8 @@
 
 (set-face-attribute 'default nil :font
                     "DejaVu Sans Mono-18")
+
+(setq org-export-html-style-include-default t)
 
 
 (defun insert-time ()
@@ -377,9 +381,11 @@ This is used to set `sql-alternate-buffer-name' within
   "Replace the preceding sexp with its value."
   (interactive)
   (backward-kill-sexp)
-  (condition-case nil
-      (prin1 (eval (read (current-kill 0)))
-             (current-buffer))
+  (condition-case
+      nil (progn
+            (insert (current-kill 0))
+            (insert " = ")
+            (prin1 (eval (read (current-kill 0))) (current-buffer)))
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
 
@@ -392,7 +398,8 @@ This is used to set `sql-alternate-buffer-name' within
                       ("@computer" . ?c)
                       ("@work" . ?w)
                       ("@email" . ?m)
-                      ("@phone" . ?p)))
+                      ("@phone" . ?p)
+                      ("splunk" . ?s)))
 
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cc" 'org-capture)
@@ -415,6 +422,8 @@ This is used to set `sql-alternate-buffer-name' within
            (tags-todo "@anywhere|@computer|@work" ((org-agenda-prefix-format "")))))
          ("W" "Waiting for"
           ((todo "WAITING" ((org-agenda-prefix-format "")))))
+         ("e" "Errands"
+          ((tags-todo "@errands")))
          ("c" "Communications"
           ((tags-todo "@email" ((org-agenda-prefix-format "")))
            (tags-todo "@phone" ((org-agenda-prefix-format ""))))))))
@@ -430,7 +439,7 @@ This is used to set `sql-alternate-buffer-name' within
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/data/org/single_todos.org" "~/data/org/projects.org" "~/data/org/waiting_for.org"))))
+ '(org-agenda-files (quote ("~/Dropbox/org/todos.org" "~/Dropbox/org/projects.org"))))
 
 ; From http://nflath.com/2010/03/org-mode-2/
 (org-clock-persistence-insinuate)
@@ -448,3 +457,25 @@ This is used to set `sql-alternate-buffer-name' within
       (unless (equal effort "")
         (org-set-property "Effort" effort)))))
 (add-hook 'org-clock-in-prepare-hook 'my-org-mode-ask-effort)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;; My journal
+(defun insert-time ()
+  (interactive)
+  (insert (format-time-string "<%Y-%m-%d %a>")))
+
+(defun journal ()
+  (interactive)
+  (find-file "~/Dropbox/org/technical_diary.org")
+  (end-of-buffer)
+  (insert "\n\n")
+  (insert "* ")
+  (insert-time)
+  (insert " "))
+
+(global-set-key "\C-x\C-j" 'journal)
