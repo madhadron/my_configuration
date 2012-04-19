@@ -79,6 +79,8 @@
 (require 'typopunct)
 (typopunct-change-language 'english t)
 
+(global-set-key "\M-p\M-m" 'typopunct-mode)
+
 (defconst typopunct-minus (decode-char 'ucs #x2212))
 (defconst typopunct-pm    (decode-char 'ucs #xB1))
 (defconst typopunct-mp    (decode-char 'ucs #x2213))
@@ -234,11 +236,13 @@
   (longlines-mode 0))
 
 (setq org-src-fontify-natively t)
-(setq org-directory "~/Dropbox/org")
+(setq org-directory "~/data/org")
 (setq org-default-notes-file (concat org-directory "/todos.org"))
 
-(add-to-list 'auto-mode-alist '("\\.(org|txt)\\'" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.plan\\'"))
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.gpg\\'" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.plan\\'" . org-mode))
 (add-to-list 'auto-mode-alist '("bashrc\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("bash_profile\\'" . sh-mode))
 (add-to-list 'auto-mode-alist '("\\.tex\\'" . latex-mode))
@@ -439,7 +443,7 @@ This is used to set `sql-alternate-buffer-name' within
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/Dropbox/org/todos.org" "~/Dropbox/org/projects.org"))))
+ '(org-agenda-files (quote ("/Volumes/FJRTC/org/todos.org" "/Volumes/FJRTC/org/projects.org"))))
 
 ; From http://nflath.com/2010/03/org-mode-2/
 (org-clock-persistence-insinuate)
@@ -479,3 +483,7 @@ This is used to set `sql-alternate-buffer-name' within
   (insert " "))
 
 (global-set-key "\C-x\C-j" 'journal)
+
+;; Encrypted files
+(require 'epa-file)
+(epa-file-enable)
