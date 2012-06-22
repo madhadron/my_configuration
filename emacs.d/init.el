@@ -232,11 +232,14 @@
   (typopunct-mode 1)
   (wc-mode)
   (flyspell-mode)
+  (auto-revert-mode)
   (turn-off-auto-fill)
   (longlines-mode 0))
 
 (setq org-src-fontify-natively t)
 (setq org-directory "~/Dropbox/data/org")
+(setq org-mobile-inbox-for-pull "~/Dropbox/data/org/flagged.org")
+(setq org-mobile-directory "~/Dropbox/MobileOrg")
 (setq org-default-notes-file (concat org-directory "/todos.org"))
 
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
@@ -282,16 +285,6 @@
 (defun insert-time ()
   (interactive)
   (insert (format-time-string "%Y-%m-%d-%R")))
-
-(defun journal () 
-  (interactive) 
-  (find-file "~/journal.org")
-  (end-of-buffer)
-  (insert "\n\n")
-  (insert "* ")
-  (insert-time)
-  (insert "\n\n"))
-(global-set-key "\C-x\C-j" 'journal)
 
 
 ; SQL mode
@@ -397,13 +390,10 @@ This is used to set `sql-alternate-buffer-name' within
 (setq org-log-done 'time)
 (setq org-tag-alist '(("@anywhere" . ?a)
                       ("@errands" . ?e)
-                      ("@sonjas" . ?h)
-                      ("@fremont" . ?f)
+                      ("@home" . ?h)
                       ("@computer" . ?c)
                       ("@work" . ?w)
-                      ("@email" . ?m)
-                      ("@phone" . ?p)
-                      ("splunk" . ?s)))
+                      ("@email" . ?m)))
 
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cc" 'org-capture)
@@ -420,7 +410,7 @@ This is used to set `sql-alternate-buffer-name' within
              (mapcar (lambda (x) (list 'tags-todo (car x) '((org-agenda-prefix-format "")))) org-tag-alist))
        '(("h" "Todos at home"
           ((agenda "")
-           (tags-todo "@anywhere|@computer|@sonjas" ((org-agenda-prefix-format "")))))
+           (tags-todo "@anywhere|@computer|@home" ((org-agenda-prefix-format "")))))
          ("w" "Todos at work"
           ((agenda "")
            (tags-todo "@anywhere|@computer|@work" ((org-agenda-prefix-format "")))))
@@ -451,7 +441,12 @@ This is used to set `sql-alternate-buffer-name' within
 (setq org-clock-idle-time 15)
 (setq org-clock-out-remove-zero-time-clocks t)
 (setq org-clock-persist 'history)
- 
+
+(setq org-capture-templates
+      '(("t" "Todo" entry (id "27DAE93A-D2D9-44F3-856D-D9CC81DC108D")
+         "** TODO %?")
+        ))
+
 (defun my-org-mode-ask-effort ()
   "Ask for an effort estimate when clocking in."
   (unless (org-entry-get (point) "Effort")
@@ -467,7 +462,11 @@ This is used to set `sql-alternate-buffer-name' within
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(org-default ((t (:inherit default :family "Lucida Grande"))))
+ '(org-level-1 ((t (:inherit outline-1 :slant normal :weight normal :height 1.266 :family "Lucida Grande"))))
+ '(org-level-2 ((t (:inherit outline-2 :slant normal :weight normal :height 1.125 :family "Lucida Grande"))))
+ '(org-level-3 ((t (:inherit outline-3 :slant normal :weight bold :height 1.0 :family "Lucida Grande"))))
+ '(org-table ((t (:foreground "LightSkyBlue" :family "Monaco")))))
 
 ;; My journal
 (defun insert-time ()
@@ -489,17 +488,37 @@ This is used to set `sql-alternate-buffer-name' within
 (require 'epa-file)
 (epa-file-enable)
 
-(defun xml-pretty-print-region (start end)
-  (interactive "r")
-  (let ((cb (current-buffer))
-        (buf (get-buffer-create "*xml*")))
-    (set-buffer buf)
-    (erase-buffer)
-    (set-buffer cb)
-    (copy-to-buffer buf start end)
 
-    (switch-to-buffer-other-window buf)
-    (xml-mode)
-    (join-broken-lines (point-min) (point-max))
-    (sgml-pretty-print (point-min) (point-max))
-    (other-window -1)))
+(defvar visual-wrap-column nil)
+
+(defun set-visual-wrap-column (new-wrap-column &optional buffer)
+  "Force visual line wrap at NEW-WRAP-COLUMN in BUFFER (defaults
+    to current buffer) by setting the right-hand margin on every
+    window that displays BUFFER.  A value of NIL or 0 for
+    NEW-WRAP-COLUMN disables this behavior."
+  (interactive (list (read-number "New visual wrap column, 0 to disable: " (or visual-wrap-column fill-column 0))))
+  (if (and (numberp new-wrap-column)
+           (zerop new-wrap-column))
+      (setq new-wrap-column nil))
+  (with-current-buffer (or buffer (current-buffer))
+    (visual-line-mode t)
+    (set (make-local-variable 'visual-wrap-column) new-wrap-column)
+    (add-hook 'window-configuration-change-hook 'update-visual-wrap-column nil t)
+    (let ((windows (get-buffer-window-list)))
+      (while windows
+        (when (window-live-p (car windows))
+          (with-selected-window (car windows)
+            (update-visual-wrap-column)))
+        (setq windows (cdr windows))))))
+
+(defun update-visual-wrap-column ()
+  (if (not visual-wrap-column)
+      (set-window-margins nil nil)
+    (let* ((current-margins (window-margins))
+           (right-margin (or (cdr current-margins) 0))
+           (current-width (window-width))
+           (current-available (+ current-width right-margin)))
+      (if (<= current-available visual-wrap-column)
+          (set-window-margins nil (car current-margins))
+        (set-window-margins nil (car current-margins)
+                            (- current-available visual-wrap-column))))))

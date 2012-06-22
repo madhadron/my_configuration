@@ -17,37 +17,8 @@ PS1='\h:\W$(__git_ps1 "(%s)") \u\$ '
 
 
 # Host specific customizations
-alias rhino="ssh fross@rhino"
-if [ 'rhino' \< `hostname` -o 'hyrax' \< `hostname` ]; then
-    umask 007
-    export MATSENGRP=/mnt/orca/home/phs_grp/matsengrp
-    export PATH="$MATSENGRP/local/bin:$PATH"
-    export LD_LIBRARY_PATH="$MATSENGRP/local/lib:$LD_LIBRARY_PATH"
-    export SILO="/shared/silo_researcher/Matsen_F/MatsenGrp/"
-    export WORKING="$SILO/working/fross"
-    export CDPATH="$CDPATH:$SILO:$WORKING:$SILO/micro_refset"
-    alias wd="cd $WORKING"
-    alias silo="cd $SILO"
-fi
-
-alias meph="ssh fross@mephistopheles"
-if [ `hostname` = mephistopheles ]; then
-    :
-fi
-
-alias molmicro="ssh fredross@172.25.186.81"
-if [ 'microdb' \< `hostname` ]; then
-    :
-fi
-
-alias sci="ssh labmed+fredross@sci.labmed.washington.edu"
-if [ `hostname` = sci ]; then
-    alias emacs=emacs-snapshot
-    alias emacsclient=emacsclient.emacs-snapshot
-fi
-
 if [ `uname` = Darwin ]; then
-    export PATH="/Applications/splunk/bin:/Applications/Emacs24.app/Contents/MacOS/bin:/usr/local/bin:/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin:$PATH"
+    export PATH="/Applications/Emacs24.app/Contents/MacOS/bin:/usr/local/bin:/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin:$PATH:/Applications/splunk/bin"
     alias emacs="/Applications/Emacs24.app/Contents/MacOS/Emacs"
     alias emacsclient="/Applications/Emacs24.app/Contents/MacOS/bin/emacsclient"
 fi
