@@ -236,7 +236,7 @@
   (longlines-mode 0))
 
 (setq org-src-fontify-natively t)
-(setq org-directory "~/data/org")
+(setq org-directory "~/Dropbox/data/org")
 (setq org-default-notes-file (concat org-directory "/todos.org"))
 
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
@@ -274,7 +274,7 @@
    (sqlite .t )))
 
 (set-face-attribute 'default nil :font
-                    "DejaVu Sans Mono-18")
+                    "DejaVu Sans Mono-28")
 
 (setq org-export-html-style-include-default t)
 
@@ -443,7 +443,8 @@ This is used to set `sql-alternate-buffer-name' within
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("/Volumes/FJRTC/org/todos.org" "/Volumes/FJRTC/org/projects.org"))))
+ '(js-indent-level 4)
+ '(org-agenda-files (quote ("~/Dropbox/data/org/todos.org" "~/Dropbox/data/org/projects.org"))))
 
 ; From http://nflath.com/2010/03/org-mode-2/
 (org-clock-persistence-insinuate)
@@ -475,7 +476,7 @@ This is used to set `sql-alternate-buffer-name' within
 
 (defun journal ()
   (interactive)
-  (find-file "~/Dropbox/org/technical_diary.org")
+  (find-file "~/Dropbox/data/org/technical_diary.org")
   (end-of-buffer)
   (insert "\n\n")
   (insert "* ")
@@ -487,3 +488,18 @@ This is used to set `sql-alternate-buffer-name' within
 ;; Encrypted files
 (require 'epa-file)
 (epa-file-enable)
+
+(defun xml-pretty-print-region (start end)
+  (interactive "r")
+  (let ((cb (current-buffer))
+        (buf (get-buffer-create "*xml*")))
+    (set-buffer buf)
+    (erase-buffer)
+    (set-buffer cb)
+    (copy-to-buffer buf start end)
+
+    (switch-to-buffer-other-window buf)
+    (xml-mode)
+    (join-broken-lines (point-min) (point-max))
+    (sgml-pretty-print (point-min) (point-max))
+    (other-window -1)))

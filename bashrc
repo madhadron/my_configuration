@@ -63,9 +63,10 @@ shopt -s dotglob
 shopt -s extglob
 
 # Python virtualenv setup
-if [ -f /mnt/orca/home/phs_grp/matsengrp/local/bin/virtualenvwrapper.sh ]; then
-    source /mnt/orca/home/phs_grp/matsengrp/local/bin/virtualenvwrapper.sh
+if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
+    source /usr/local/bin/virtualenvwrapper.sh
 fi
+
 if [ -f /opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/virtualenvwrapper-3.0-py2.7.egg/EGG-INFO/scripts/virtualenvwrapper.sh ]; then
     source /opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/virtualenvwrapper-3.0-py2.7.egg/EGG-INFO/scripts/virtualenvwrapper.sh
 fi
