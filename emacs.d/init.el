@@ -472,16 +472,31 @@ This is used to set `sql-alternate-buffer-name' within
   (interactive)
   (insert (format-time-string "<%Y-%m-%d %a>")))
 
-(defun journal ()
+(setq journal-path "~/Dropbox/data/org")
+(setq journal-base-name "technical_diary.org")
+
+(defun append-journal-entry ()
   (interactive)
-  (find-file "~/Dropbox/data/org/technical_diary.org")
+  (find-file (concat journal-path "/" journal-base-name))
   (end-of-buffer)
   (insert "\n\n")
   (insert "* ")
   (insert-time)
   (insert " "))
 
-(global-set-key "\C-x\C-j" 'journal)
+(global-set-key "\C-x\C-j" 'append-journal-entry)
+
+;; (defun rotate-journal ()
+;;   (let* ((last-archive (last (directory-files journal-path t "^technical_diary.org")))
+;;          (last-number (string-to-number (last (split-string last-archive "\\."))))
+;;          (next-archive (concat journal-base-name "." (number-to-string (+ last-number 1)))))
+;;     (save-excursion
+;;       (switch-to-buffer "technical_diary.org")
+;;       (save-buffer)
+;;       (kill-buffer)
+;;       (rename-file (concat journal-path "/" journal-base-name)
+;;                    (concat journal-path "/" next-archive)))))
+;; (rotate-journal)
 
 ;; Encrypted files
 (require 'epa-file)
