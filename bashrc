@@ -26,7 +26,6 @@ fi
 
 # Miscellaneous settings
 export CDPATH=".:~/data/projects:~/data/writing:~/data/code"
-export HISTIGNORE="&:ls:ls *:emacs:[bf]g:exit"
 set -o ignoreeof
 shopt -s cdspell
 shopt -s cmdhist
