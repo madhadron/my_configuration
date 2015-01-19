@@ -57,3 +57,4 @@
 
 (add-to-list 'default-frame-alist '(font . "Menlo-16"))
 
+(setq exec-path (append exec-path '("/usr/local/bin")))

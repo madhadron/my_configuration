@@ -43,3 +43,6 @@ fi
 export WORKON_HOME=~/.virtualenvs
 mkdir -p $WORKON_HOME
 
+# Plan 9 from user space
+export PLAN9=/Users/fred/data/plan9port
+PATH=$PATH:$PLAN9/bin
