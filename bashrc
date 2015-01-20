@@ -32,17 +32,6 @@ shopt -s cmdhist
 shopt -s dotglob
 shopt -s extglob
 
-# Python virtualenv setup
-if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
-    source /usr/local/bin/virtualenvwrapper.sh
+if [ -f ~/.bashrc.local ]; then
+   source ~/.bashrc.local
 fi
-
-if [ -f /opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/virtualenvwrapper-3.0-py2.7.egg/EGG-INFO/scripts/virtualenvwrapper.sh ]; then
-    source /opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/virtualenvwrapper-3.0-py2.7.egg/EGG-INFO/scripts/virtualenvwrapper.sh
-fi
-export WORKON_HOME=~/.virtualenvs
-mkdir -p $WORKON_HOME
-
-# Plan 9 from user space
-export PLAN9=/Users/fred/data/plan9port
-PATH=$PATH:$PLAN9/bin
