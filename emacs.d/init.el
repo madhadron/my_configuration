@@ -52,9 +52,61 @@
 
 (global-set-key "\C-x\C-j" 'append-journal-entry)
 
+;; Go
+(add-to-list 'load-path "~/.emacs.d/" t)
+(require 'go-mode-autoloads)
+(add-hook 'before-save-hook 'gofmt-before-save)
+(add-hook 'go-mode-hook '(lambda () (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)))
+(add-hook 'go-mode-hook '(lambda () (local-set-key (kbd "C-c C-g") 'go-goto-imports)))
+(add-hook 'go-mode-hook '(lambda () (local-set-key (kbd "C-c C-k") 'godoc)))
+
+(load "$GOPATH/src/code.google.com/p/go.tools/cmd/oracle/oracle.el")
+(add-hook 'go-mode-hook 'go-oracle-mode)
+
+(require 'package) 
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(package-initialize)
+
+;;goflymake
+(add-to-list 'load-path "~/murmur/signalsd/src/github.com/dougm/goflymake")
+(require 'go-flymake)
+(require 'go-flycheck)
 
 
+;; Terminal
+(require 'eshell)
+(require 'em-smart)
+(setq eshell-where-to-jump 'begin)
+(setq eshell-review-quick-commands nil)
+(setq eshell-smart-space-goes-to-end t)
 
-(add-to-list 'default-frame-alist '(font . "Menlo-16"))
+ (eval-after-load "em-ls"
+    '(progn
+       (defun ted-eshell-ls-find-file-at-point (point)
+         "RET on Eshell's `ls' output to open files."
+         (interactive "d")
+         (find-file (buffer-substring-no-properties
+                     (previous-single-property-change point 'help-echo)
+                     (next-single-property-change point 'help-echo))))
 
-(setq exec-path (append exec-path '("/usr/local/bin")))
+       (defun pat-eshell-ls-find-file-at-mouse-click (event)
+         "Middle click on Eshell's `ls' output to open files.
+ From Patrick Anderson via the wiki."
+         (interactive "e")
+         (ted-eshell-ls-find-file-at-point (posn-point (event-end event))))
+
+       (let ((map (make-sparse-keymap)))
+         (define-key map (kbd "RET")      'ted-eshell-ls-find-file-at-point)
+         (define-key map (kbd "<return>") 'ted-eshell-ls-find-file-at-point)
+         (define-key map (kbd "<mouse-2>") 'pat-eshell-ls-find-file-at-mouse-click)
+         (defvar ted-eshell-ls-keymap map))
+
+       (defadvice eshell-ls-decorated-name (after ted-electrify-ls activate)
+         "Eshell's `ls' now lets you click or RET on file names to open them."
+         (add-text-properties 0 (length ad-return-value)
+                              (list 'help-echo "RET, mouse-2: visit this file"
+                                    'mouse-face 'highlight
+                                    'keymap ted-eshell-ls-keymap)
+                              ad-return-value)
+         ad-return-value)))
+
