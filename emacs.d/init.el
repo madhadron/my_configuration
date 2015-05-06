@@ -60,9 +60,6 @@
 (add-hook 'go-mode-hook '(lambda () (local-set-key (kbd "C-c C-g") 'go-goto-imports)))
 (add-hook 'go-mode-hook '(lambda () (local-set-key (kbd "C-c C-k") 'godoc)))
 
-(load "$GOPATH/src/code.google.com/p/go.tools/cmd/oracle/oracle.el")
-(add-hook 'go-mode-hook 'go-oracle-mode)
-
 (require 'package) 
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (package-initialize)
@@ -110,3 +107,7 @@
                               ad-return-value)
          ad-return-value)))
 
+
+(add-to-list 'load-path "~/.emacs.d/yaml-mode")
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode))
