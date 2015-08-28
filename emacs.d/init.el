@@ -1,12 +1,47 @@
 ;; Fred Ross's Emacs customizations.
+(require 'package) 
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(package-initialize)
+(require 'ergoemacs-mode)
+(setq ergoemacs-theme nil) ;; Uses Standard Ergoemacs keyboard theme
+(setq ergoemacs-keyboard-layout "us") ;; Assumes QWERTY keyboard layout
+(ergoemacs-mode 1)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ergoemacs-ctl-c-or-ctl-x-delay 0.2)
+ '(ergoemacs-handle-ctl-c-or-ctl-x (quote both))
+ '(ergoemacs-ini-mode t)
+ '(ergoemacs-keyboard-layout "us")
+ '(ergoemacs-mode nil)
+ '(ergoemacs-smart-paste nil)
+ '(ergoemacs-theme "standard")
+ '(ergoemacs-theme-options nil)
+ '(ergoemacs-use-menus t)
+ '(initial-scratch-message ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
 
-; My custom keybindings
-(global-set-key "\C-x\C-m" 'execute-extended-command)
-(global-set-key "\C-c\C-m" 'execute-extended-command)
-(global-set-key "\C-xm" 'execute-extended-command)
+")
+ '(org-CUA-compatible nil)
+ '(org-special-ctrl-a/e nil)
+ '(org-support-shift-select nil)
+ '(scroll-error-top-bottom nil)
+ '(set-mark-command-repeat-pop nil)
+ '(shift-select-mode t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+(global-auto-revert-mode 1)
 (global-set-key "\C-w" 'backward-kill-word)
-(global-set-key "\C-x\C-k" 'kill-region)
-(global-set-key "\C-c\C-k" 'kill-region)
+(global-set-key (kbd "<mode-line> <C-mouse-3>") 'mouse-split-window-vertically)
+(global-set-key (kbd "<C-S-mouse-1>") 'kill-this-buffer)
 
 ; Set up my interface
 (line-number-mode 1)
@@ -15,54 +50,48 @@
 (tool-bar-mode 0)
 (menu-bar-mode 1)
 
-; Add packages and configure them
+;; ; Add packages and configure them
 (let ((default-directory "~/.emacs.d/"))
-      (normal-top-level-add-subdirs-to-load-path))
+  (normal-top-level-add-subdirs-to-load-path))
 
 (require 'color-theme)
 (require 'color-theme-tango)
 
-;; Org-mode configuration
-(add-hook 'org-mode-hook 'my-org-customizations)
-(defun my-org-customizations ()
-  (auto-revert-mode)
-  (setq truncate-lines nil))
+;; ;; Org-mode configuration
+;; (add-hook 'org-mode-hook 'my-org-customizations)
+;; (defun my-org-customizations ()
+;;   (setq truncate-lines nil))
 
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.gpg\\'" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.plan\\'" . org-mode))
+;; (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+;; (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
+;; (add-to-list 'auto-mode-alist '("\\.gpg\\'" . org-mode))
+;; (add-to-list 'auto-mode-alist '("\\.plan\\'" . org-mode))
 
-;; My journal
-(defun insert-time ()
-  (interactive)
-  (insert (format-time-string "<%Y-%m-%d %a>")))
+;; ;; My journal
+;; (defun insert-time ()
+;;   (interactive)
+;;   (insert (format-time-string "<%Y-%m-%d %a>")))
 
-(setq journal-path "~/Dropbox/data/org")
-(setq journal-base-name "technical_diary.org")
+;; (setq journal-path "~/Dropbox/data/org")
+;; (setq journal-base-name "technical_diary.org")
 
-(defun append-journal-entry ()
-  (interactive)
-  (find-file (concat journal-path "/" journal-base-name))
-  (end-of-buffer)
-  (insert "\n\n")
-  (insert "* ")
-  (insert-time)
-  (insert " "))
+;; (defun append-journal-entry ()
+;;   (interactive)
+;;   (find-file (concat journal-path "/" journal-base-name))
+;;   (end-of-buffer)
+;;   (insert "\n\n")
+;;   (insert "* ")
+;;   (insert-time)
+;;   (insert " "))
 
-(global-set-key "\C-x\C-j" 'append-journal-entry)
 
 ;; Go
 (add-to-list 'load-path "~/.emacs.d/" t)
 (require 'go-mode-autoloads)
 (add-hook 'before-save-hook 'gofmt-before-save)
-(add-hook 'go-mode-hook '(lambda () (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)))
-(add-hook 'go-mode-hook '(lambda () (local-set-key (kbd "C-c C-g") 'go-goto-imports)))
-(add-hook 'go-mode-hook '(lambda () (local-set-key (kbd "C-c C-k") 'godoc)))
-
-(require 'package) 
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(package-initialize)
+(add-hook 'go-mode-hook '(lambda () 
+  (local-set-key (kbd "M-]") 'godef-jump)
+  (local-set-key (kbd "M-[") 'pop-global-mark)))
 
 ;;goflymake
 (add-to-list 'load-path "~/murmur/signalsd/src/github.com/dougm/goflymake")
@@ -108,6 +137,8 @@
          ad-return-value)))
 
 
-(add-to-list 'load-path "~/.emacs.d/yaml-mode")
-(require 'yaml-mode)
-(add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode))
+;; (add-to-list 'load-path "~/.emacs.d/yaml-mode")
+;; (require 'yaml-mode)
+;; (add-to-list 'auto-mode-alist '("\\.sls$" . yaml-mode))
+
+
