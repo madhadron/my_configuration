@@ -16,7 +16,7 @@
  '(ergoemacs-ini-mode t)
  '(ergoemacs-keyboard-layout "us")
  '(ergoemacs-mode nil)
- '(ergoemacs-smart-paste nil)
+ '(ergoemacs-smart-paste t)
  '(ergoemacs-theme "standard")
  '(ergoemacs-theme-options nil)
  '(ergoemacs-use-menus t)
