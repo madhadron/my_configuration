@@ -40,3 +40,5 @@ if [ -f ~/.bashrc.local ]; then
    source ~/.bashrc.local
 fi
 
+alias sc='ssh -F ~/murmur/config/ssh_hosts'
+
