@@ -42,3 +42,7 @@ fi
 
 alias sc='ssh -F ~/murmur/config/ssh_hosts'
 
+export LIMS_HOST=scratch1
+export SIGNALSENSE_LOCAL=/home/fred/murmur-local
+
+alias ec='emacsclient -c -n -q'
