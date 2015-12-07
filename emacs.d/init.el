@@ -56,6 +56,7 @@
 (global-set-key (kbd "M-RET") 'execute-extended-command)
 (global-set-key (kbd "M-DEL") 'backward-kill-word)
 (global-set-key (kbd "M-s") 'save-buffer)
+(global-set-key (kbd "M-l") 'goto-line)
 
 
 (global-unset-key (kbd "C-w"))
