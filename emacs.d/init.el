@@ -61,6 +61,7 @@
 (global-set-key (kbd "M-s") 'save-buffer)
 (global-set-key (kbd "M-0") 'find-file)
 (global-set-key (kbd "s-0") 'find-file)
+(global-set-key (kbd "M-l") 'goto-line)
 
 (global-unset-key (kbd "C-w"))
 (global-unset-key (kbd "C-x C-f"))
@@ -100,6 +101,12 @@
 
 (setq journal-path "~/Dropbox/data/org")
 (setq journal-base-name "technical_diary.org")
+
+(defun switch-to-journal ()
+  (interactive)
+  (find-file (concat journal-path "/" journal-base-name))
+  (end-of-buffer))
+(global-set-key (kbd "<shift-f7>") 'switch-to-journal)
 
 (defun append-journal-entry ()
   (interactive)
