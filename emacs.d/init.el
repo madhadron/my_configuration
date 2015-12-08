@@ -93,6 +93,12 @@
 (setq journal-path "~/Dropbox/data/org")
 (setq journal-base-name "technical_diary.org")
 
+(defun switch-to-journal ()
+  (interactive)
+  (find-file (concat journal-path "/" journal-base-name))
+  (end-of-buffer))
+(global-set-key (kbd "<shift-f7>") 'switch-to-journal)
+
 (defun append-journal-entry ()
   (interactive)
   (find-file (concat journal-path "/" journal-base-name))
