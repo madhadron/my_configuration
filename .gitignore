@@ -3,4 +3,6 @@ emacs.d/auto-save-list
 emacs.d/places
 emacs.d/backups
 emacs.d/anything-c-adaptive-history
+emacs.d/elpa
+emacs.d/eshell/history
 *.elc

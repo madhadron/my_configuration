@@ -2,6 +2,14 @@
 (setq user-full-name "Fred Ross")
 (setq user-mail-address "fred@madhadron.com")
 
+(setq macintosh-p (string-equal system-type "darwin"))
+
+(if macintosh-p
+    (progn
+      (setenv "PATH" (concat (getenv "PATH")
+			     ":/usr/local/gnupg-2.1/bin"))
+      (add-to-list 'exec-path "/usr/local/gnupg-2.1/bin")))
+
 (require 'cl)
 (require 'package) 
 (package-initialize)
@@ -42,23 +50,21 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(setq macintosh-p (string-equal system-type "darwin"))
-
-(if macintosh-p
-    (custom-set-variables '(ns-command-modifier (quota meta))))
-
 (global-set-key (kbd "M-z") 'undo)
 (global-set-key (kbd "M-x") 'kill-region)
-(if macintosh-p
-    (global-set-key (kbd "M-c") 'ns-copy-including-secondary)
-    (global-set-key (kbd "M-c") 'copy-region-as-kill))
+(global-set-key (kbd "M-c") 'copy-region-as-kill)
 (global-set-key (kbd "M-v") 'yank)
 (global-set-key (kbd "M-RET") 'execute-extended-command)
+(global-set-key (kbd "<s-return>") 'execute-extended-command)
 (global-set-key (kbd "M-DEL") 'backward-kill-word)
+(global-set-key (kbd "<s-backspace>") 'backward-kill-word)
 (global-set-key (kbd "M-s") 'save-buffer)
-
+(global-set-key (kbd "M-0") 'find-file)
+(global-set-key (kbd "s-0") 'find-file)
 
 (global-unset-key (kbd "C-w"))
+(global-unset-key (kbd "C-x C-f"))
+(global-unset-key (kbd "C-x C-s"))
 
 ; Set up my interface
 (line-number-mode 1)
@@ -78,6 +84,9 @@
 (add-hook 'org-mode-hook 'my-org-customizations)
 (defun my-org-customizations ()
   (setq truncate-lines nil))
+
+(require 'epa-file)
+(epa-file-enable)
 
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
@@ -185,4 +194,5 @@ directory to make multiple eshell windows easier."
        ad-return-value)))
 
 (global-set-key (kbd "M-/") 'eshell-here)
+(global-set-key (kbd "s-/") 'eshell-here)
 

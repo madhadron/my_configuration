@@ -9,6 +9,7 @@ source ~/.config_dir
 # Host specific customizations
 if [ `uname` = Darwin ]; then
     alias emacsclient="/Applications/Emacs24.app/Contents/MacOS/bin/emacsclient"
+    export PATH="$PATH:/usr/local/gnupg-2.1/bin"
 fi
 
 set -o ignoreeof
