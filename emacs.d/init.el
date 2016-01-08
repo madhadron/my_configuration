@@ -19,11 +19,16 @@
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 
 
-(let* ((packages '(magit
+(let* ((packages '(cl
+		   magit
+		   let-alist
+		   seq
+		   web-mode
 		   flycheck
 		   go-mode
-		   color-theme
-		   color-theme-tango))
+		   elpy
+		   ein
+		   py-autopep8))
        (installed-p (loop for pkg in packages
 			  when (not (package-installed-p pkg)) do (return nil)
 			  finally (return t))))
@@ -78,8 +83,8 @@
 (let ((default-directory "~/.emacs.d/"))
   (normal-top-level-add-subdirs-to-load-path))
 
-(require 'color-theme)
-(require 'color-theme-tango)
+;(require 'color-theme)
+;(require 'color-theme-tango)
 
 ;; ;; Org-mode configuration
 (add-hook 'org-mode-hook 'my-org-customizations)
@@ -118,27 +123,29 @@
   (insert " "))
 (global-set-key (kbd "<f7>") 'append-journal-entry)
 
+(global-flycheck-mode)
+
 ;; Go
 (setenv "GOPATH" (expand-file-name "~/murmur/signalsd"))
-(add-to-list 'load-path "~/.emacs.d/" t)
-(require 'go-mode-autoloads)
 (add-hook 'before-save-hook 'gofmt-before-save)
 (add-hook 'go-mode-hook '(lambda () 
   (local-set-key (kbd "M-]") 'godef-jump)
   (local-set-key (kbd "M-[") 'pop-global-mark)
   (linum-mode t)))
 
-;;goflymake
-(let ((flymake-path (concat (file-name-as-directory (getenv "GOPATH"))
-                            "src/github.com/dougm/goflymake")))
-  (if (file-directory-p flymake-path)
-      (progn
-        (add-to-list 'load-path flymake-path)
-        (require 'go-flymake)
-        (require 'go-flycheck))
-    (message "go-flymake not found.")))test.go
+;; Python flycheck
+(elpy-enable)
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+(require 'py-autopep8)
+(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+(elpy-use-ipython)
 
-
+;; Web development
+(setq flycheck-jscsrc (expand-file-name "~/murmur/hooks/jscsrc"))
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
 ;; Terminal
 (require 'eshell)
@@ -203,3 +210,8 @@ directory to make multiple eshell windows easier."
 (global-set-key (kbd "M-/") 'eshell-here)
 (global-set-key (kbd "s-/") 'eshell-here)
 
+;; SignalSense development
+;; gofmt on Go code
+;; pylint or pyflake8 on Python
+;; py-autopep8 on Python
+;; web-mode for .html files, jshint for JavaScript
