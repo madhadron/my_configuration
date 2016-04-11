@@ -1,16 +1,18 @@
-;; Fred Ross's Emacs customizations.
+;;; summary --- Fred's emacs config
+;;; Commentary:
+
+;;; Code:
 (setq user-full-name "Fred Ross")
 (setq user-mail-address "fred@madhadron.com")
 
-(setq macintosh-p (string-equal system-type "darwin"))
-
+(defvar macintosh-p (string-equal system-type "darwin"))
 (if macintosh-p
     (progn
       (setenv "PATH" (concat (getenv "PATH")
 			     ":/usr/local/gnupg-2.1/bin"))
       (add-to-list 'exec-path "/usr/local/gnupg-2.1/bin")))
 
-(require 'cl)
+(require 'cl-lib)
 (require 'package) 
 (package-initialize)
 (add-to-list 'package-archives 
@@ -18,26 +20,82 @@
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 
-
 (let* ((packages '(cl
-		   magit
-		   let-alist
-		   seq
-		   web-mode
-		   flycheck
-		   go-mode
-		   elpy
-		   ein
-		   py-autopep8))
-       (installed-p (loop for pkg in packages
-			  when (not (package-installed-p pkg)) do (return nil)
-			  finally (return t))))
+           magit
+           let-alist
+           seq
+           web-mode
+           flycheck
+           go-mode
+           company
+           company-quickhelp
+           elpy
+           ein
+           py-autopep8))
+       (installed-p (cl-loop for pkg in packages
+              when (not (package-installed-p pkg)) do (cl-return nil)
+              finally (cl-return t))))
   (unless installed-p
     (message "%s" "Refreshing package database...")
     (package-refresh-contents)
     (dolist (pkg packages)
       (when (not (package-installed-p pkg))
-	(package-install pkg)))))
+    (package-install pkg)))))
+
+(global-flycheck-mode)
+ 
+;; Go
+(add-hook 'before-save-hook 'gofmt-before-save)
+(add-to-list 'load-path (substitute-in-file-name "$GOPATH/src/github.com/nsf/gocode/emacs-company/"))
+(load-file (substitute-in-file-name "$GOPATH/src/golang.org/x/tools/cmd/oracle/oracle.el"))
+ 
+(defvar go-mode-context-menu-map
+  (let ((map (make-sparse-keymap "Go oracle")))
+    (define-key map [freevars] (cons "Free variables in selection" 'go-oracle-freevars))
+    (define-key map [referrers] (cons "References to identifier" 'go-oracle-referrers))
+    (define-key map [peers] (cons "Channel senders/receivers" 'go-oracle-peers))
+    (define-key map [what] (cons "Refers to..." 'go-oracle-pointsto))
+    (define-key map [implements] (cons "Implemented interfaces" 'go-oracle-implements))
+    (define-key map [callstack] (cons "Call stack to here" 'go-oracle-callstack))
+    (define-key map [callees] (cons "Callees" 'go-oracle-callees))
+    (define-key map [callers] (cons "Callers" 'go-oracle-callers))
+    (define-key map [declaration] (cons "Declaration" 'go-oracle-definition))
+    (define-key map [describe] (cons "Describe" 'go-oracle-describe))
+ 
+    map) "Keymap for the go-mode context menu.")
+ 
+(defun go-mode-popup-context-menu (event &optional prefix)
+  "Pop up a context menu."
+  (interactive "@e \nP")
+  (popup-menu go-mode-context-menu-map event prefix))
+ 
+(add-hook 'go-mode-hook '(lambda ()
+  (local-set-key (kbd "M-]") 'godef-jump)
+  (local-set-key (kbd "M-[") 'pop-global-mark)
+  (local-set-key [mouse-3] 'go-mode-popup-context-menu)
+  (linum-mode t)))
+ 
+ 
+(require 'company)
+(require 'company-quickhelp)
+(require 'company-go)
+(global-company-mode)
+(setq company-idle-delay 0.05)
+(setq company-quickhelp-delay 0.05)
+ 
+;; Python flycheck
+(elpy-enable)
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+(require 'py-autopep8)
+(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+(elpy-use-ipython)
+ 
+;; JavaScript/HTML/CSS
+(setq flycheck-jscsrc (expand-file-name "~/murmur/hooks/jscsrc"))
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
 (setq inhibit-splash-screen t
       initial-scratch-message nil
@@ -55,6 +113,7 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+(define-key global-map (kbd "<S-down-mouse-1>") 'mouse-save-then-kill)
 (global-set-key (kbd "M-z") 'undo)
 (global-set-key (kbd "M-x") 'kill-region)
 (global-set-key (kbd "M-c") 'copy-region-as-kill)
@@ -83,9 +142,6 @@
 (let ((default-directory "~/.emacs.d/"))
   (normal-top-level-add-subdirs-to-load-path))
 
-;(require 'color-theme)
-;(require 'color-theme-tango)
-
 ;; ;; Org-mode configuration
 (add-hook 'org-mode-hook 'my-org-customizations)
 (defun my-org-customizations ()
@@ -104,48 +160,24 @@
   (interactive)
   (insert (format-time-string "<%Y-%m-%d %a>")))
 
-(setq journal-path "~/Dropbox/data/org")
-(setq journal-base-name "technical_diary.org")
+(defvar journal-path "~/Dropbox/data/org")
+(defvar journal-base-name "technical_diary.org")
 
 (defun switch-to-journal ()
   (interactive)
   (find-file (concat journal-path "/" journal-base-name))
-  (end-of-buffer))
+  (goto-char (point-max)))
 (global-set-key (kbd "<shift-f7>") 'switch-to-journal)
 
 (defun append-journal-entry ()
   (interactive)
   (find-file (concat journal-path "/" journal-base-name))
-  (end-of-buffer)
+  (goto-char (point-max))
   (insert "\n\n")
   (insert "* ")
   (insert-time)
   (insert " "))
 (global-set-key (kbd "<f7>") 'append-journal-entry)
-
-(global-flycheck-mode)
-
-;; Go
-(setenv "GOPATH" (expand-file-name "~/murmur/signalsd"))
-(add-hook 'before-save-hook 'gofmt-before-save)
-(add-hook 'go-mode-hook '(lambda () 
-  (local-set-key (kbd "M-]") 'godef-jump)
-  (local-set-key (kbd "M-[") 'pop-global-mark)
-  (linum-mode t)))
-
-;; Python flycheck
-(elpy-enable)
-(when (require 'flycheck nil t)
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode))
-(require 'py-autopep8)
-(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
-(elpy-use-ipython)
-
-;; Web development
-(setq flycheck-jscsrc (expand-file-name "~/murmur/hooks/jscsrc"))
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
 ;; Terminal
 (require 'eshell)
@@ -210,8 +242,5 @@ directory to make multiple eshell windows easier."
 (global-set-key (kbd "M-/") 'eshell-here)
 (global-set-key (kbd "s-/") 'eshell-here)
 
-;; SignalSense development
-;; gofmt on Go code
-;; pylint or pyflake8 on Python
-;; py-autopep8 on Python
-;; web-mode for .html files, jshint for JavaScript
+(provide 'init)
+;;; init.el ends here
