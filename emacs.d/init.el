@@ -82,7 +82,9 @@
 (global-company-mode)
 (setq company-idle-delay 0.05)
 (setq company-quickhelp-delay 0.05)
- 
+(add-to-list 'company-dabbrev-code-modes 'web-mode)
+(add-to-list 'company-dabbrev-code-modes 'go-mode)
+
 ;; Python flycheck
 (elpy-enable)
 (when (require 'flycheck nil t)

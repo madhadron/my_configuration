@@ -16,7 +16,6 @@ shopt -s extglob
 
 [[ $PS1 && -f $CONFIG_DIR/git-completion ]] && \
     source $CONFIG_DIR/git-completion
-export PROMPT_COMMAND=__prompt_command
 
 function __prompt_command() {
 	local EXIT="$?"
@@ -32,3 +31,4 @@ function __prompt_command() {
 	PS1+="$(/bin/date) $(__git_ps1 '(%s)') \u@\h\w\n\$ "
 }
 
+export PROMPT_COMMAND=__prompt_command
