@@ -97,6 +97,10 @@
 ;; JavaScript/HTML/CSS
 (setq flycheck-jscsrc (expand-file-name "~/murmur/hooks/jscsrc"))
 (require 'web-mode)
+(add-hook 'web-mode-hook
+	  (lambda ()
+	    (setq indent-tabs-mode nil)
+	    (setq web-mode-markup-indent-offset 2)))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
 (setq inhibit-splash-screen t

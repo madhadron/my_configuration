@@ -3,7 +3,7 @@ if [ -d "$HOME/murmur" ]; then
 	export SIGNALSENSE_HOME="$HOME/murmur/build"
 	export GO15VENDOREXPERIMENT=1
 	export GOPATH="$HOME/murmur/signalsd"
-	export PATH="/usr/local/go/bin:$SIGNALSENSE_HOME/build/bin:$GOPATH/bin:$PATH"
+	export PATH="/usr/local/go/bin:$SIGNALSENSE_HOME/bin:$GOPATH/bin:$PATH"
 	export PYTHONPATH="$SIGNALSENSE_HOME/gasper:$SIGNALSENSE_HOME/pylib"
 	alias sc='ssh -F ~/murmur/config/ssh_hosts'
 fi
