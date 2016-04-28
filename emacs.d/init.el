@@ -59,7 +59,7 @@
     (define-key map [callstack] (cons "Call stack to here" 'go-oracle-callstack))
     (define-key map [callees] (cons "Callees" 'go-oracle-callees))
     (define-key map [callers] (cons "Callers" 'go-oracle-callers))
-    (define-key map [declaration] (cons "Declaration" 'go-oracle-definition))
+    (define-key map [declaration] (cons "Declaration" 'godef-jump))
     (define-key map [describe] (cons "Describe" 'go-oracle-describe))
  
     map) "Keymap for the go-mode context menu.")
