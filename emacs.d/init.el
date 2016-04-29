@@ -14,14 +14,19 @@
 
 (require 'cl-lib)
 (require 'package) 
+(setq package-archives 
+      '(("ELPA" . "http://tromey.com/elpa/")
+	("gnu" . "http://elpa.gnu.org/packages/")
+	("melpa" . "http://melpa.org/packages/")
+	("melpa-stable" . "http://stable.melpa.org/packages/")
+	("marmalade" . "http://marmalade-repo.org/packages/")
+	))
+
 (package-initialize)
-(add-to-list 'package-archives 
-	     '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
+
 
 (let* ((packages '(cl
-           magit
+	   magit
            let-alist
            seq
            web-mode
@@ -29,6 +34,7 @@
            go-mode
            company
            company-quickhelp
+	   company-go
            elpy
            ein
            py-autopep8))
