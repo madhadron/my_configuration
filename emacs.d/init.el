@@ -7,8 +7,8 @@
 (if macintosh-p
     (progn
       (setenv "PATH" (concat (getenv "PATH")
-			     ":/usr/local/gnupg-2.1/bin"))
-      (add-to-list 'exec-path "/usr/local/gnupg-2.1/bin")))
+			     ":/usr/local/bin"))
+      (add-to-list 'exec-path "/usr/local/bin")))
 
 (require 'cl)
 (require 'package) 
