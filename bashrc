@@ -3,7 +3,6 @@ source ~/.config_dir
 # SignalSense configuration
 if [ -d "$HOME/murmur" ]; then
 	export SIGNALSENSE_HOME="$HOME/murmur/build"
-	export GO15VENDOREXPERIMENT=1
 	export GOPATH="$HOME/murmur/signalsd"
 	export PATH="/usr/local/go/bin:$SIGNALSENSE_HOME/bin:$GOPATH/bin:/usr/local/cuda-7.5/bin:$PATH"
 	export PYTHONPATH="$SIGNALSENSE_HOME/gasper:$SIGNALSENSE_HOME/pylib"
