@@ -5,14 +5,6 @@ if [ `uname` = Darwin ]; then
     alias emacsclient="/Applications/Emacs24.app/Contents/MacOS/bin/emacsclient"
 fi
 
-# SignalSense configuration
-if [ -d "$HOME/murmur" ]; then
-	export SIGNALSENSE_HOME="$HOME/murmur/build"
-	export GOPATH="$HOME/murmur/signalsd"
-	export PATH="/usr/local/go/bin:$SIGNALSENSE_HOME/bin:$GOPATH/bin:/usr/local/cuda-7.5/bin:$PATH"
-	export PYTHONPATH="$SIGNALSENSE_HOME/gasper:$SIGNALSENSE_HOME/pylib"
-fi
-
 set -o ignoreeof
 shopt -s cdspell
 shopt -s cmdhist

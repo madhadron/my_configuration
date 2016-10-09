@@ -8,7 +8,7 @@ for f in bashrc emacs.d; do
     ln -sf $CONFIG_DIR/$f ~/.$f
 done
 
-rm `find emacs.d -name \*.elc`
+find emacs.d -name \*.elc -delete
 emacs --batch \
       --eval "(let ((default-directory  \"~/.emacs.d/\")) (normal-top-level-add-subdirs-to-load-path))" \
       --eval "(batch-byte-compile-if-not-done)" `find emacs.d -name \*.el`

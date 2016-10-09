@@ -13,7 +13,7 @@
       (add-to-list 'exec-path "/usr/local/bin")))
 
 (require 'cl-lib)
-(require 'package) 
+(require 'package)
 (setq package-archives 
       '(("ELPA" . "http://tromey.com/elpa/")
 	("gnu" . "http://elpa.gnu.org/packages/")
@@ -26,18 +26,12 @@
 
 
 (let* ((packages '(cl
-	   magit
-           let-alist
-           seq
+		   elpy
+		   py-autopep8
            web-mode
            flycheck
-           go-mode
            company
-           company-quickhelp
-	   company-go
-           elpy
-           ein
-           py-autopep8))
+           company-quickhelp))
        (installed-p (cl-loop for pkg in packages
               when (not (package-installed-p pkg)) do (cl-return nil)
               finally (cl-return t))))
@@ -50,46 +44,12 @@
 
 (global-flycheck-mode)
  
-;; Go
-(add-hook 'before-save-hook 'gofmt-before-save)
-(add-to-list 'load-path (substitute-in-file-name "$GOPATH/src/github.com/nsf/gocode/emacs-company/"))
-(load-file (substitute-in-file-name "$GOPATH/src/golang.org/x/tools/cmd/oracle/oracle.el"))
- 
-(defvar go-mode-context-menu-map
-  (let ((map (make-sparse-keymap "Go oracle")))
-    (define-key map [freevars] (cons "Free variables in selection" 'go-oracle-freevars))
-    (define-key map [referrers] (cons "References to identifier" 'go-oracle-referrers))
-    (define-key map [peers] (cons "Channel senders/receivers" 'go-oracle-peers))
-    (define-key map [what] (cons "Refers to..." 'go-oracle-pointsto))
-    (define-key map [implements] (cons "Implemented interfaces" 'go-oracle-implements))
-    (define-key map [callstack] (cons "Call stack to here" 'go-oracle-callstack))
-    (define-key map [callees] (cons "Callees" 'go-oracle-callees))
-    (define-key map [callers] (cons "Callers" 'go-oracle-callers))
-    (define-key map [declaration] (cons "Declaration" 'godef-jump))
-    (define-key map [describe] (cons "Describe" 'go-oracle-describe))
- 
-    map) "Keymap for the go-mode context menu.")
- 
-(defun go-mode-popup-context-menu (event &optional prefix)
-  "Pop up a context menu."
-  (interactive "@e \nP")
-  (popup-menu go-mode-context-menu-map event prefix))
- 
-(add-hook 'go-mode-hook '(lambda ()
-  (local-set-key (kbd "M-]") 'godef-jump)
-  (local-set-key (kbd "M-[") 'pop-global-mark)
-  (local-set-key [mouse-3] 'go-mode-popup-context-menu)
-  (linum-mode t)))
- 
- 
 (require 'company)
 (require 'company-quickhelp)
-(require 'company-go)
 (global-company-mode)
 (setq company-idle-delay 0.05)
 (setq company-quickhelp-delay 0.05)
 (add-to-list 'company-dabbrev-code-modes 'web-mode)
-(add-to-list 'company-dabbrev-code-modes 'go-mode)
 
 ;; Python flycheck
 (elpy-enable)
@@ -98,7 +58,7 @@
   (add-hook 'elpy-mode-hook 'flycheck-mode))
 (require 'py-autopep8)
 (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
-(elpy-use-ipython)
+;(elpy-use-ipython)
  
 ;; JavaScript/HTML/CSS
 (setq flycheck-jscsrc (expand-file-name "~/murmur/hooks/jscsrc"))
@@ -172,7 +132,7 @@
   (interactive)
   (insert (format-time-string "<%Y-%m-%d %a>")))
 
-(defvar journal-path "~/Dropbox/data/org")
+(defvar journal-path "~/data/org")
 (defvar journal-base-name "technical_diary.org")
 
 (defun switch-to-journal ()
@@ -190,6 +150,17 @@
   (insert-time)
   (insert " "))
 (global-set-key (kbd "<f7>") 'append-journal-entry)
+
+(defun append-bjournal-entry ()
+  (interactive)
+  (find-file (concat journal-path "/business_journal.org"))
+  (goto-char (point-max))
+  (insert "\n\n")
+  (insert "* ")
+  (insert-time)
+  (insert " "))
+(global-set-key (kbd "<f8>") 'append-bjournal-entry)
+
 
 ;; Terminal
 (require 'eshell)
