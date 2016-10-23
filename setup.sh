@@ -1,11 +1,11 @@
 # The directory where all the configuration files are kept.
 CONFIG_DIR=$( cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P )
 
-echo "export CONFIG_DIR=$CONFIG_DIR" > ~/.config_dir
+echo "export CONFIG_DIR='$CONFIG_DIR'" > ~/.config_dir
 
 for f in bashrc emacs.d; do
-    rm -rf ~/.$f
-    ln -sf $CONFIG_DIR/$f ~/.$f
+    if [ -e "$HOME/.$f" ]; then rm -rf "$HOME/.$f"; fi
+    ln -s "$CONFIG_DIR/$f" "$HOME/.$f"
 done
 
 find emacs.d -name \*.elc -delete

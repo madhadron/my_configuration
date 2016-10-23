@@ -5,6 +5,10 @@ if [ `uname` = Darwin ]; then
     alias emacsclient="/Applications/Emacs24.app/Contents/MacOS/bin/emacsclient"
 fi
 
+if [ -d /usr/local/go/bin ]; then
+    export PATH="$PATH:/usr/local/go/bin"
+fi
+
 set -o ignoreeof
 shopt -s cdspell
 shopt -s cmdhist
